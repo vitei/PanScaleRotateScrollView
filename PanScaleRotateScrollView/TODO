@@ -1,0 +1,25 @@
+- Move all stuff over to this rep
+- Clean up interface
+- Consider Moving over to a CocoaPod
+
+
+
+
+- Consider bindings for locking/no locking when certain subviews underneath are touched
+
+- (void)rotateView:(UIRotationGestureRecognizer *)gestureRecognizer
+{
+    if(!_viewToManipulate.touchingPlanet && gestureRecognizer.numberOfTouches == 2)
+    {
+        if ([gestureRecognizer state] == UIGestureRecognizerStateBegan || [gestureRecognizer state] == UIGestureRecognizerStateChanged)
+        {
+            // TODO: pipe in center point in here
+            //[self setAnchorPointForGestureRecogniser:gestureRecognizer forView:_spaceView];
+            
+            _viewToManipulate.transform = CGAffineTransformRotate([_spaceView transform], [gestureRecognizer rotation]);
+            [gestureRecognizer setRotation:0];
+        }
+    }
+    
+    [self updateLabels];
+}
