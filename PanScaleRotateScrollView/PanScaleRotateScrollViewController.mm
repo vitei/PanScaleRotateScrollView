@@ -26,13 +26,10 @@
 
 @end
 
-
 @implementation PanScaleRotateScrollViewController
 
-static inline CGFloat CGAffineTransformGetScaleX(CGAffineTransform transform)
-{
-    return sqrtf( (transform.a * transform.a) + (transform.c * transform.c) );
-};
+#pragma mark -
+#pragma mark Setup and Teardown
 
 - (void)setupControls
 {
@@ -57,6 +54,36 @@ static inline CGFloat CGAffineTransformGetScaleX(CGAffineTransform transform)
     [self.view addGestureRecognizer:panRecognizer];
 }
 
+- (void)setupTestView
+{
+    _viewToManipulate = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width/2, self.view.frame.size.height/2)];
+    _viewToManipulate.center = self.view.center;
+    [_viewToManipulate setBackgroundColor:[UIColor darkGrayColor]];
+    [self.view addSubview:_viewToManipulate];
+}
+    
+- (void)viewDidLoad
+{
+    [self setupTestView];
+    [self setupControls];
+}
+
+#pragma mark -
+#pragma mark Maths Helper Functions
+
+static inline CGFloat CGAffineTransformGetScaleX(CGAffineTransform transform)
+{
+    return sqrtf( (transform.a * transform.a) + (transform.c * transform.c) );
+}
+    
+- (CGPoint)pointBetweenPoint:(CGPoint)a andPoint:(CGPoint)b
+{
+    return CGPointMake((a.x+b.x)/2, (a.y+b.y)/2);
+}
+
+#pragma mark -
+#pragma mark Touch Control Related
+    
 - (void)rotateView:(UIRotationGestureRecognizer *)gestureRecognizer
 {
     if(gestureRecognizer.numberOfTouches == 2)
@@ -87,11 +114,6 @@ static inline CGFloat CGAffineTransformGetScaleX(CGAffineTransform transform)
     
     view.layer.position = position;
     view.layer.anchorPoint = anchorPoint;
-}
-
-- (CGPoint)pointBetweenPoint:(CGPoint)a andPoint:(CGPoint)b
-{
-    return CGPointMake((a.x+b.x)/2, (a.y+b.y)/2);
 }
     
 - (void)setAnchorPointForGestureRecogniser:(UIGestureRecognizer *)gesture forView:(UIView *)view
@@ -157,19 +179,6 @@ static inline CGFloat CGAffineTransformGetScaleX(CGAffineTransform transform)
         return NO;
     
     return YES;
-}
-
-- (void)setupTestView
-{
-    _viewToManipulate = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 1024, 1024)];
-    [_viewToManipulate setBackgroundColor:[UIColor darkGrayColor]];
-    [self.view addSubview:_viewToManipulate];
-}
-
-- (void)viewDidLoad
-{
-    [self setupTestView];
-    [self setupControls];
 }
 
 @end
